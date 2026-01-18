@@ -1,0 +1,29 @@
+{
+  "Research" : {
+    "BaseId": "DIP 1975",
+    "Year": 1980,
+    "ResearchDays": 105,
+    "MonthlyCost": 3000000,
+    "TreeYOffset": -3,
+    "DependencyIds": [
+      "DIP 1975"
+    ]
+  },
+  "Name": "DIP 1980",
+  "BaseName": "DIP",
+  "MinSize": 10,
+  "MaxSize": 28,
+  "MinPinCount": 18,
+  "MaxPinCount": 64,
+  "MinCacheKB": 4,
+  "MaxCacheKB": 8,
+  "ConsumptionMultiplier": 0.25,
+  "SafeTemperature": 60.0,
+  "ThermalEfficiency": 0.6,
+  "BaseUnitCost": 14,
+  "ProjectCost": 4000000,
+  "ProjectTime": 35,
+  "SupportsMultipleCores": false
+  
+  
+}

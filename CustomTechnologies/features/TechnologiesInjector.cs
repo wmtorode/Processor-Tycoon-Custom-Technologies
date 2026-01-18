@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
+using Newtonsoft.Json;
 using BepInEx.Logging;
 using CustomTechnologies.data;
 using ProcessorTycoon.Hardware;
@@ -27,11 +27,6 @@ public class TechnologiesInjector
     
     private List<PackageTechnology> packageTechnologies;
     
-    private JsonSerializerOptions  _jsonOptions = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true
-    };
-    
     private void Initialize()
     {
         packageTechnologies = new List<PackageTechnology>();
@@ -48,13 +43,14 @@ public class TechnologiesInjector
         {
             try
             {
-              var package = JsonSerializer.Deserialize<PackageTechnology>(File.ReadAllText(packageFile), _jsonOptions);  
+              var package = JsonConvert.DeserializeObject<PackageTechnology>(File.ReadAllText(packageFile));  
               packageTechnologies.Add(package);
               Logger.LogInfo($"Loaded Custom Package {package.Name}");
             } 
             catch (Exception ex)
             {
                 Logger.LogError($"Failed to load Custom Package from {packageFile}: {ex.Message}");
+                Logger.LogError($"Failed to load Custom Package Inner: {ex.InnerException?.Message}");
             }
         }
         

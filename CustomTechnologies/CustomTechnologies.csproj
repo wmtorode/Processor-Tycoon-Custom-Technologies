@@ -42,7 +42,7 @@
         <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all"/>
         <PackageReference Include="BepInEx.Core" Version="5.*"/>
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*"/>
-        <PackageReference Include="System.Text.Json" Version="10.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="UnityEngine.Modules" Version="6000.0.65" IncludeAssets="compile"/>
     </ItemGroup>
 

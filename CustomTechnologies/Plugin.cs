@@ -19,8 +19,7 @@ public class CustomTechnologiesPlugin : BaseUnityPlugin
         
         // load config
         CustomTechConfig.InitConfig(Config);
-
-
+        
         var packagePath = Path.Combine(Paths.PluginPath, CustomTechConfig.PackagingTechDir.Value);
         TechnologiesInjector.Instance.LoadCustomPackages(packagePath);
     }
