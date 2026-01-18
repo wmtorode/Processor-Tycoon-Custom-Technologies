@@ -1,8 +1,10 @@
 ﻿using System.IO;
+using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
 using CustomTechnologies.data;
 using CustomTechnologies.features;
+using HarmonyLib;
 
 namespace CustomTechnologies;
 
@@ -22,5 +24,8 @@ public class CustomTechnologiesPlugin : BaseUnityPlugin
         
         var packagePath = Path.Combine(Paths.PluginPath, CustomTechConfig.PackagingTechDir.Value);
         TechnologiesInjector.Instance.LoadCustomPackages(packagePath);
+        
+        Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "ca.jwolf.customTech");
+
     }
 }

@@ -1,7 +1,4 @@
-/.idea/.idea.CustomTechnologies/.idea/.gitignore
-/.idea/.idea.CustomTechnologies/.idea/encodings.xml
-/.idea/.idea.CustomTechnologies/.idea/indexLayout.xml
-/.idea/.idea.CustomTechnologies/.idea/vcs.xml
+/.idea*
 /CustomTechnologies/bin*
 /CustomTechnologies/obj*
 CustomTechnologies.sln.DotSettings.user

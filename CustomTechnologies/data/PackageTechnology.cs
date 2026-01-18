@@ -2,7 +2,7 @@
 
 namespace CustomTechnologies.data;
 
-public class PackageTechnology
+public class PackageTechnology: ICustomTech
 {
     public ResearchTechnology Research;
     public String Name;
@@ -21,4 +21,7 @@ public class PackageTechnology
     public int ProjectTime;
     public bool SupportsMultipleCores;
 
+    public ResearchTechnology ResearchTechnology => Research;
+    public string TechId => Name;
+    public TechType Type => TechType.Package;
 }

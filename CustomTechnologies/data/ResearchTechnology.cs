@@ -9,6 +9,6 @@ public class ResearchTechnology
     public int Year = 0;
     public float ResearchDays = 0f;
     public float MonthlyCost = 0f;
-    public float TreeYOffset = 0f;
+    public int TreeYOffset = 0;
     public List<String> DependencyIds = new List<string>();
 }
