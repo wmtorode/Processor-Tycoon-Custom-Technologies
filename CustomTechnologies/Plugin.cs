@@ -34,6 +34,30 @@ public class CustomTechnologiesPlugin : BaseUnityPlugin
             TechnologiesInjector.Instance.LoadCustomTechnologies<ProcessNodeTechnology>(techPath);
         }
         
+        foreach (var techDir in CustomTechConfig.MemoryTechDir.Value.Split(";"))
+        {
+            var techPath = Path.Combine(Paths.PluginPath, techDir);
+            TechnologiesInjector.Instance.LoadCustomTechnologies<MemoryTechnology>(techPath);
+        }
+        
+        foreach (var techDir in CustomTechConfig.FrequencyTechDir.Value.Split(";"))
+        {
+            var techPath = Path.Combine(Paths.PluginPath, techDir);
+            TechnologiesInjector.Instance.LoadCustomTechnologies<FrequencyTechnology>(techPath);
+        }
+        
+        foreach (var techDir in CustomTechConfig.CacheTechDir.Value.Split(";"))
+        {
+            var techPath = Path.Combine(Paths.PluginPath, techDir);
+            TechnologiesInjector.Instance.LoadCustomTechnologies<CacheTechnology>(techPath);
+        }
+        
+        foreach (var techDir in CustomTechConfig.WaferSizeTechDir.Value.Split(";"))
+        {
+            var techPath = Path.Combine(Paths.PluginPath, techDir);
+            TechnologiesInjector.Instance.LoadCustomTechnologies<WaferTechnology>(techPath);
+        }
+        
         
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "ca.jwolf.customTech");
 

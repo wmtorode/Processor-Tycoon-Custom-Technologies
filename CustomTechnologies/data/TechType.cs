@@ -5,5 +5,8 @@ public enum TechType
     Package,
     ProcessNode,
     Memory,
-    Frequency
+    Frequency,
+    Cache,
+    WaferSize,
+    Multicore
 }

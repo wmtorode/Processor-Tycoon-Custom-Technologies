@@ -100,6 +100,18 @@ public class TechnologiesInjector
                 case  TechType.ProcessNode:
                     InjectProcessNodes(gameObj.GetComponent<ProcessNode>(), customTech as ProcessNodeTechnology);
                     break;
+                case TechType.Memory:
+                    InjectMemory(gameObj.GetComponent<Memory>(), customTech as MemoryTechnology);
+                    break;
+                case TechType.Frequency:
+                    InjectFrequency(gameObj.GetComponent<Frequency>(), customTech as FrequencyTechnology);
+                    break;
+                case TechType.Cache:
+                    InjectCache(gameObj.GetComponent<CacheSize>(), customTech as CacheTechnology);
+                    break;
+                case TechType.WaferSize:
+                    InjectWafer(gameObj.GetComponent<WaferSize>(), customTech as WaferTechnology);
+                    break;
             }
             
             researchDataProvider.allTechnologies.Add(technology);
@@ -163,6 +175,40 @@ public class TechnologiesInjector
         processNode.ProjectCost = processNodeTechnology.ProjectCost;
         processNode.ProjectTime = processNodeTechnology.ProjectTime;
         processNode.FailureRateOffset = processNodeTechnology.FailureRateOffset;
+    }
+    
+    private void InjectMemory(Memory memory, MemoryTechnology memoryTechnology)
+    {
+        memory.Name = memoryTechnology.Name;
+        memory.IpsThreshold = memoryTechnology.IpsThreshold;
+        memory.CacheIps = memoryTechnology.CacheIps;
+        memory.CacheIpcBoost = memoryTechnology.CacheIpcBoost;
+        memory.UnitCostPerCache = memoryTechnology.UnitCostPerCache;
+        memory.ProjectCost = memoryTechnology.ProjectCost;
+        memory.ProjectTime = memoryTechnology.ProjectTime;
+    }
+
+    private void InjectFrequency(Frequency frequency, FrequencyTechnology frequencyTechnology)
+    {
+        frequency.Name = frequencyTechnology.Name;
+        frequency.Value = frequencyTechnology.Frequency;
+    }
+    
+    private void InjectCache(CacheSize cache, CacheTechnology cacheTechnology)
+    {
+        cache.Name = cacheTechnology.Name;
+        cache.Steps = cacheTechnology.L1Steps4K;
+        cache.StepsL2 = cacheTechnology.L2Steps16K;
+        cache.StepsL3 = cacheTechnology.L3Steps64K;
+    }
+    
+    private void InjectWafer(WaferSize wafer, WaferTechnology waferTechnology)
+    {
+        wafer.Name = waferTechnology.Name;
+        wafer.Value = waferTechnology.WaferSize;
+        wafer.ConstructionCostMultiplier = waferTechnology.ConstructionCostMultiplier;
+        wafer.MaintainanceCostMultiplier = waferTechnology.MaintainanceCostMultiplier;
+        wafer.UpgradeCost = waferTechnology.UpgradeCost;
     }
     
     

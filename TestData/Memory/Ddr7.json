@@ -1,0 +1,19 @@
+{
+  "Research" : {
+    "BaseId": "DDR6",
+    "Year": 2034,
+    "ResearchDays": 250,
+    "MonthlyCost": 400000000,
+    "TreeYOffset": 2,
+    "DependencyIds": [
+      "DDR6"
+    ]
+  },
+  "Name": "DDR7",
+  "IpsThreshold": 96000000,
+  "CacheIps": 4500000,
+  "CacheIpcBoost": 3.75,
+  "UnitCostPerCache": 1,
+  "ProjectCost": 450000000,
+  "ProjectTime": 55
+}

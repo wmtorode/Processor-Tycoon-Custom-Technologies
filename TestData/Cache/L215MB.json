@@ -1,0 +1,16 @@
+{
+  "Research" : {
+    "BaseId": "L2 1 MB",
+    "Year": 2026,
+    "ResearchDays": 150,
+    "MonthlyCost": 600000000,
+    "TreeYOffset": 3,
+    "DependencyIds": [
+      "L2 1 MB"
+    ]
+  },
+  "Name": "L2 1.5 MB",
+  "L1Steps4K": 0,
+  "L2Steps16K": 96,
+  "L3Steps64K": 0
+}
