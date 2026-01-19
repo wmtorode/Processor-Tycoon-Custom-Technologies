@@ -112,6 +112,9 @@ public class TechnologiesInjector
                 case TechType.WaferSize:
                     InjectWafer(gameObj.GetComponent<WaferSize>(), customTech as WaferTechnology);
                     break;
+                case TechType.Multicore:
+                    InjectCores(gameObj.GetComponent<Multicore>(), customTech as MultiCoreTechnology);
+                    break;
             }
             
             researchDataProvider.allTechnologies.Add(technology);
@@ -205,10 +208,18 @@ public class TechnologiesInjector
     private void InjectWafer(WaferSize wafer, WaferTechnology waferTechnology)
     {
         wafer.Name = waferTechnology.Name;
+        wafer.NormalName = waferTechnology.NormalName;
         wafer.Value = waferTechnology.WaferSize;
         wafer.ConstructionCostMultiplier = waferTechnology.ConstructionCostMultiplier;
         wafer.MaintainanceCostMultiplier = waferTechnology.MaintainanceCostMultiplier;
         wafer.UpgradeCost = waferTechnology.UpgradeCost;
+    }
+
+    private void InjectCores(Multicore multicore, MultiCoreTechnology multicoreTechnology)
+    {
+        multicore.Name = multicoreTechnology.Name;
+        multicore.CoreCount = multicoreTechnology.CoreCount;
+        multicore.EnablesSmt = multicoreTechnology.EnablesSmt;
     }
     
     
