@@ -21,9 +21,19 @@ public class CustomTechnologiesPlugin : BaseUnityPlugin
         
         // load config
         CustomTechConfig.InitConfig(Config);
+
+        foreach (var techDir in CustomTechConfig.PackagingTechDir.Value.Split(";"))
+        {
+            var techPath = Path.Combine(Paths.PluginPath, techDir);
+            TechnologiesInjector.Instance.LoadCustomTechnologies<PackageTechnology>(techPath);
+        }
         
-        var packagePath = Path.Combine(Paths.PluginPath, CustomTechConfig.PackagingTechDir.Value);
-        TechnologiesInjector.Instance.LoadCustomPackages(packagePath);
+        foreach (var techDir in CustomTechConfig.ProcessNodeTechDir.Value.Split(";"))
+        {
+            var techPath = Path.Combine(Paths.PluginPath, techDir);
+            TechnologiesInjector.Instance.LoadCustomTechnologies<ProcessNodeTechnology>(techPath);
+        }
+        
         
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "ca.jwolf.customTech");
 

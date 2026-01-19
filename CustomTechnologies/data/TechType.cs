@@ -2,5 +2,8 @@ namespace CustomTechnologies.data;
 
 public enum TechType
 {
-    Package
+    Package,
+    ProcessNode,
+    Memory,
+    Frequency
 }

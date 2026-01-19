@@ -35,28 +35,30 @@ public class TechnologiesInjector
         customTechnologies = new List<ICustomTech>();
         Logger = CustomTechnologiesPlugin.Logger;
         HasInitialized = true;
-
     }
 
-    public void LoadCustomPackages(String packageDirectory)
+    public void LoadCustomTechnologies<T>(String directory) where T : ICustomTech
     {
-        Logger.LogInfo($"Loading Custom Packages from {packageDirectory}");
+        Logger.LogInfo($"Loading Custom Packages from {directory}");
+        
+        if (!Directory.Exists(directory))
+            return;
 
-        foreach (var packageFile in Directory.GetFiles(packageDirectory, "*.json"))
+        foreach (var customTechFile in Directory.GetFiles(directory, "*.json"))
         {
             try
             {
-              var package = JsonConvert.DeserializeObject<PackageTechnology>(File.ReadAllText(packageFile));  
-              customTechnologies.Add(package);
-              Logger.LogInfo($"Loaded Custom Package {package.Name}");
+                var tech = JsonConvert.DeserializeObject<T>(File.ReadAllText(customTechFile));  
+                customTechnologies.Add(tech);
+                Logger.LogInfo($"Loaded Custom Tech {tech.TechId} ({tech.Type})");
             } 
             catch (Exception ex)
             {
-                Logger.LogError($"Failed to load Custom Package from {packageFile}: {ex.Message}");
+                Logger.LogError($"Failed to load Custom Tech from {customTechFile}: {ex.Message}");
             }
         }
-        
     }
+    
 
     public void InjectTechnologies(ResearchDataProvider  researchDataProvider)
     {
@@ -89,21 +91,31 @@ public class TechnologiesInjector
             technology.ID = researchDataProvider.allTechnologies.Count;
             
             technology.Dependencies.Clear();
-            foreach (var dependencyId in customTech.ResearchTechnology.DependencyIds)
-                technology.Dependencies.Add(FindBaseTech(researchDataProvider.allTechnologies, dependencyId));
             
             switch (customTech.Type)
             {
                 case TechType.Package:
                     InjectPackages(gameObj.GetComponent<Package>(), customTech as PackageTechnology);
                     break;
+                case  TechType.ProcessNode:
+                    InjectProcessNodes(gameObj.GetComponent<ProcessNode>(), customTech as ProcessNodeTechnology);
+                    break;
             }
             
             researchDataProvider.allTechnologies.Add(technology);
             
-            Logger.LogInfo($"Injected Custom Technology {customTech.TechId}");
+            Logger.LogInfo($"Injected Custom Technology: {customTech.TechId} type: {customTech.Type}");
             
         }
+
+        foreach (var technology in customTechnologies)
+        {
+            var tech = FindBaseTech(researchDataProvider.allTechnologies, technology.TechId);
+            foreach (var dependencyId in technology.ResearchTechnology.DependencyIds)
+                tech.Dependencies.Add(FindBaseTech(researchDataProvider.allTechnologies, dependencyId));
+            
+        }
+        
     }
     
     private Technology FindBaseTech(List<Technology> technologies, String baseId)
@@ -136,6 +148,21 @@ public class TechnologiesInjector
         package.ProjectCost = packageTechnology.ProjectCost;
         package.ProjectTime = packageTechnology.ProjectTime;
         package.SupportsMultipleCores = packageTechnology.SupportsMultipleCores;
+    }
+
+    private void InjectProcessNodes(ProcessNode processNode, ProcessNodeTechnology processNodeTechnology)
+    {
+        processNode.Name = processNodeTechnology.Name;
+        processNode.minimumYieldRate = processNodeTechnology.MinimumYieldRate;
+        processNode.maximumYieldRate = processNodeTechnology.MaximumYieldRate;
+        processNode.CacheCostReduction = processNodeTechnology.CacheCostReduction;
+        processNode.LearningRequirement = processNodeTechnology.LearningRequirement;
+        processNode.TransistorDensity = processNodeTechnology.TransistorDensity;
+        processNode.PowerConsumptionReduction = processNodeTechnology.PowerConsumptionReduction;
+        processNode.MulticorePenaltyReduction = processNodeTechnology.MulticorePenaltyReduction;
+        processNode.ProjectCost = processNodeTechnology.ProjectCost;
+        processNode.ProjectTime = processNodeTechnology.ProjectTime;
+        processNode.FailureRateOffset = processNodeTechnology.FailureRateOffset;
     }
     
     
