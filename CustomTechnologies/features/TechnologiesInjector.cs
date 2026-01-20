@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using BepInEx.Logging;
 using CustomTechnologies.data;
@@ -131,6 +132,16 @@ public class TechnologiesInjector
             
         }
         
+        ReEnumerateTechnologies(researchDataProvider.allTechnologies);
+        researchDataProvider.allTechnologies =
+            researchDataProvider.allTechnologies.OrderBy(tech => tech.ID).ToList();
+        
+        Logger.LogInfo("Technologies Injected, new ID Ordering:");
+        foreach (var tech in researchDataProvider.allTechnologies)
+        {
+            Logger.LogInfo($"{tech.ID}: {tech.name}");
+        }
+
     }
     
     private Technology FindBaseTech(List<Technology> technologies, String baseId)
@@ -220,6 +231,27 @@ public class TechnologiesInjector
         multicore.Name = multicoreTechnology.Name;
         multicore.CoreCount = multicoreTechnology.CoreCount;
         multicore.EnablesSmt = multicoreTechnology.EnablesSmt;
+    }
+
+    private void ReEnumerateTechnologies(List<Technology> technologies)
+    {
+        var wafers = technologies.FindAll(t => t.Type == TechnologyType.WaferSize);
+        
+        ReEnumerateWafers(wafers);
+        
+        
+    }
+
+    private void ReEnumerateWafers(List<Technology> technologies)
+    {
+        var waferIds = technologies.Select(t => t.ID).ToList();
+        var sortedWafers = technologies.OrderBy(t => t.gameObject.GetComponent<WaferSize>().Value).ToList();
+        var index = 0;
+        foreach (var wafer in sortedWafers)
+        {
+            wafer.ID = waferIds[index];
+            index++;
+        }
     }
     
     
