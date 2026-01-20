@@ -1,0 +1,18 @@
+{
+  "Research" : {
+    "BaseId": "76 mm",
+    "Year": 1976,
+    "ResearchDays": 65,
+    "MonthlyCost": 400000,
+    "TreeYOffset": -6,
+    "DependencyIds": [
+      "76 mm"
+    ]
+  },
+  "Name": "85 mm Wafer",
+  "NormalName": "85 mm",
+  "WaferSize": 85,
+  "ConstructionCostMultiplier": 0.4,
+  "MaintainanceCostMultiplier": 0.5,
+  "UpgradeCost": 150000
+}
