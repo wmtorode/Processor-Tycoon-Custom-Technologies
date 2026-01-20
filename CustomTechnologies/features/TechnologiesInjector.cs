@@ -235,7 +235,9 @@ public class TechnologiesInjector
 
     private void ReEnumerateTechnologies(List<Technology> technologies)
     {
-        var wafers = technologies.FindAll(t => t.Type == TechnologyType.WaferSize);
+        Logger.LogInfo($"ReEnumerating technologies");
+        
+        var wafers = technologies.Where(t => t.gameObject.GetComponent<WaferSize>() != null).ToList();
         
         ReEnumerateWafers(wafers);
         
@@ -244,11 +246,13 @@ public class TechnologiesInjector
 
     private void ReEnumerateWafers(List<Technology> technologies)
     {
+        Logger.LogInfo($"Wafers enumerated: {technologies.Count}");
         var waferIds = technologies.Select(t => t.ID).ToList();
         var sortedWafers = technologies.OrderBy(t => t.gameObject.GetComponent<WaferSize>().Value).ToList();
         var index = 0;
         foreach (var wafer in sortedWafers)
         {
+            Logger.LogInfo($"Wafer: {wafer.name}, Old ID: {wafer.ID}, New ID: {waferIds[index]}");
             wafer.ID = waferIds[index];
             index++;
         }
