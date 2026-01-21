@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using BepInEx.Logging;
 using CustomTechnologies.data;
 using ProcessorTycoon.Hardware;
+using ProcessorTycoon.Hardware.Math;
 using ProcessorTycoon.ResearchSystem;
 using UnityEngine;
 
@@ -141,6 +142,7 @@ public class TechnologiesInjector
         {
             Logger.LogInfo($"{tech.ID}: {tech.name}");
         }
+        UpdateHardwareMath(researchDataProvider.allTechnologies);
 
     }
     
@@ -237,15 +239,42 @@ public class TechnologiesInjector
     {
         Logger.LogInfo($"ReEnumerating technologies");
         
+        Logger.LogInfo($"ReEnumerating Wafers");
         var wafers = technologies.Where(t => t.gameObject.GetComponent<WaferSize>() != null).ToList();
         
         ReEnumerateWafers(wafers);
+        
+        Logger.LogInfo($"ReEnumerating Packages");
+        var packages = technologies.Where(t => t.gameObject.GetComponent<Package>() != null).ToList();
+        
+        ReEnumerateTechByYear(packages);
+        
+        Logger.LogInfo($"ReEnumerating Cores");
+        var cores = technologies.Where(t => t.gameObject.GetComponent<Multicore>() != null).ToList();
+        
+        ReEnumerateTechByYear(cores);
+        
+        Logger.LogInfo($"ReEnumerating Lithography Nodes");
+        var nodes = technologies.Where(t => t.gameObject.GetComponent<ProcessNode>() != null).ToList();
+        
+        ReEnumerateTechByYear(nodes);
+        
+        Logger.LogInfo($"ReEnumerating Memory");
+        var memory = technologies.Where(t => t.gameObject.GetComponent<Memory>() != null).ToList();
+        
+        ReEnumerateTechByYear(memory);
+        
+        Logger.LogInfo($"ReEnumerating Caches");
+        var caches = technologies.Where(t => t.gameObject.GetComponent<CacheSize>() != null).ToList();
+        
+        ReEnumerateTechByYear(caches);
         
         
     }
 
     private void ReEnumerateWafers(List<Technology> technologies)
     {
+        // wafers need to be enumerated in order of their size, otherwise the game doesn't upgrade them correctly
         Logger.LogInfo($"Wafers enumerated: {technologies.Count}");
         var waferIds = technologies.Select(t => t.ID).ToList();
         var sortedWafers = technologies.OrderBy(t => t.gameObject.GetComponent<WaferSize>().Value).ToList();
@@ -257,6 +286,44 @@ public class TechnologiesInjector
             index++;
         }
     }
-    
-    
+
+    private void ReEnumerateTechByYear(List<Technology> technologies)
+    {
+        Logger.LogInfo($"Techs enumerated: {technologies.Count}");
+        var ids = technologies.Select(t => t.ID).ToList();
+        var sortedTechs = technologies.OrderBy(t => t.Year).ToList();
+        var index = 0;
+        foreach (var tech in sortedTechs){
+            Logger.LogInfo($"Tech: {tech.name}, Old ID: {tech.ID}, New ID: {ids[index]}");
+            tech.ID = ids[index];
+            index++;
+        }
+    }
+
+
+    private void UpdateHardwareMath(List<Technology> technologies)
+    {
+        Logger.LogInfo($"Updating HardwareMath");
+        var coreCounts = new List<int>() { 1 };
+        var coreTech = technologies.Where(t => t.gameObject.GetComponent<Multicore>() != null);
+        var cores = coreTech.Select(t => t.gameObject.GetComponent<Multicore>().CoreCount).ToList();
+        foreach (var core in cores)
+        {
+            if (core != 0)
+            {
+                coreCounts.Add(core);
+                Logger.LogInfo($"Added Core Count: {core}");
+            }
+        }
+        coreCounts.Sort();
+
+        HardwareMath.cores = coreCounts.ToArray();
+        Logger.LogInfo($"HardwareMath Updated, new core count: {HardwareMath.cores.Length}");
+        foreach (var core in HardwareMath.cores)
+        {
+            Logger.LogInfo($"Core: {core}");
+        }
+    }
+
+
 }

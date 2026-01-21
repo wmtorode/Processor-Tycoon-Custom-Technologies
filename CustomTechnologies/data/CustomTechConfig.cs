@@ -12,6 +12,7 @@ public class CustomTechConfig
     public static ConfigEntry<string> WaferSizeTechDir;
     public static ConfigEntry<string> MulticoreTechDir;
     public static ConfigEntry<string> CacheTechDir;
+    public static ConfigEntry<bool> DebugMode;
     
     public static void InitConfig(ConfigFile configFile)
     {
@@ -42,6 +43,10 @@ public class CustomTechConfig
         CacheTechDir = configFile.Bind("Tech", "Cache", 
             "CustomTechnologies/Cache", new ConfigDescription(
                 "Directories where custom cache upgrades can be added, ; separated"));
+        
+        DebugMode = configFile.Bind("Debug", "Debug", 
+            false, new ConfigDescription(
+                "enable debug patches and logging, DO NOT USE IN NORMAL PLAY"));
         
     }
 }
