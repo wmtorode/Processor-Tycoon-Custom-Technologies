@@ -64,6 +64,12 @@ public class CustomTechnologiesPlugin : BaseUnityPlugin
             TechnologiesInjector.Instance.LoadCustomTechnologies<MultiCoreTechnology>(techPath);
         }
         
+        foreach (var techDir in CustomTechConfig.TechPatchDir.Value.Split(";"))
+        {
+            var techPath = Path.Combine(Paths.PluginPath, techDir);
+            TechnologiesInjector.Instance.LoadTechPatches(techPath);
+        }
+        
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "ca.jwolf.customTech");
 
     }

@@ -12,7 +12,10 @@ public class CustomTechConfig
     public static ConfigEntry<string> WaferSizeTechDir;
     public static ConfigEntry<string> MulticoreTechDir;
     public static ConfigEntry<string> CacheTechDir;
+    public static ConfigEntry<string> TechPatchDir;
+    public static ConfigEntry<string> TechDumpDir;
     public static ConfigEntry<bool> DebugMode;
+    public static ConfigEntry<bool> DumpTech;
     
     public static void InitConfig(ConfigFile configFile)
     {
@@ -44,9 +47,21 @@ public class CustomTechConfig
             "CustomTechnologies/Cache", new ConfigDescription(
                 "Directories where custom cache upgrades can be added, ; separated"));
         
+        TechPatchDir = configFile.Bind("Tech", "Patches", 
+            "CustomTechnologies/Patches", new ConfigDescription(
+                "Directories where existing technologies can be patched, ; separated"));
+        
         DebugMode = configFile.Bind("Debug", "Debug", 
             false, new ConfigDescription(
                 "enable debug patches and logging, DO NOT USE IN NORMAL PLAY"));
+        
+        DumpTech = configFile.Bind("Debug", "DumpTech", 
+            false, new ConfigDescription(
+                "enable dumping technologies to the TechDump directory, DO NOT USE IN NORMAL PLAY"));
+        
+        TechDumpDir = configFile.Bind("Debug", "TechDump", 
+            "CustomTechnologies/Dump", new ConfigDescription(
+                "Directories where existing technologies will be dumped"));
         
     }
 }

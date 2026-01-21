@@ -31,17 +31,19 @@ public class TechnologiesInjector
     private ManualLogSource Logger;
     
     private List<ICustomTech> customTechnologies;
+    private List<TechnologyPatch> patches;
     
     private void Initialize()
     {
         customTechnologies = new List<ICustomTech>();
+        patches = new List<TechnologyPatch>();
         Logger = CustomTechnologiesPlugin.Logger;
         HasInitialized = true;
     }
 
     public void LoadCustomTechnologies<T>(String directory) where T : ICustomTech
     {
-        Logger.LogInfo($"Loading Custom Packages from {directory}");
+        Logger.LogInfo($"Loading Custom Technologies from {directory}");
         
         if (!Directory.Exists(directory))
             return;
@@ -57,6 +59,28 @@ public class TechnologiesInjector
             catch (Exception ex)
             {
                 Logger.LogError($"Failed to load Custom Tech from {customTechFile}: {ex.Message}");
+            }
+        }
+    }
+
+    public void LoadTechPatches(String directory)
+    {
+        Logger.LogInfo($"Loading Tech Patches from {directory}");
+        
+        if (!Directory.Exists(directory))
+            return;
+
+        foreach (var patchFile in Directory.GetFiles(directory, "*.json"))
+        {
+            try
+            {
+                var tech = JsonConvert.DeserializeObject<TechnologyPatch>(File.ReadAllText(patchFile));  
+                patches.Add(tech);
+                Logger.LogInfo($"Loaded Patch for tech {tech.TechId}");
+            } 
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to load Tech Patch from {patchFile}: {ex.Message}");
             }
         }
     }
@@ -144,6 +168,67 @@ public class TechnologiesInjector
         }
         UpdateHardwareMath(researchDataProvider.allTechnologies);
 
+    }
+
+    public void ApplyTechPatches(ResearchDataProvider researchDataProvider)
+    {
+        Logger.LogInfo($"Applying Patches");
+
+        foreach (var patch in patches)
+        {
+            var tech = FindBaseTech(researchDataProvider.allTechnologies, patch.TechId);
+            if (tech == null)
+            {
+                Logger.LogWarning($"Tech {patch.TechId} not found, skipping patch");
+                continue;
+            }
+            
+            Logger.LogInfo($"Patching {patch.TechId}");
+
+            if (patch.Year != null)
+            {
+                Logger.LogInfo($"Patching Year from {tech.Year} to {patch.Year}");
+                tech.Year = patch.Year.Value;
+            }
+            
+            if (patch.TreeYOffset != null)
+            {
+                Logger.LogInfo($"Patching TreeYOffset from {tech.Offset} to {patch.TreeYOffset}");
+                tech.Offset = patch.TreeYOffset.Value;
+            }
+            
+            if (patch.DependencyIds != null)
+            {
+                Logger.LogInfo($"Patching Dependencies");
+                tech.Dependencies.Clear();
+                foreach (var dependencyId in patch.DependencyIds)
+                {
+                    tech.Dependencies.Add(FindBaseTech(researchDataProvider.allTechnologies, dependencyId));
+                    Logger.LogInfo($"Added Dependency: {dependencyId}");
+                }
+            }
+        }
+    }
+
+    public void DumpTechnologies(ResearchDataProvider researchDataProvider, String directory)
+    {
+        
+        Logger.LogInfo($"Dumping Technologies to {directory}");
+        
+        if (!Directory.Exists(directory))
+            Directory.CreateDirectory(directory);
+        
+        foreach (var tech in researchDataProvider.allTechnologies)
+        {
+            var techFile = Path.Combine(directory, $"{tech.name.Replace(" ", "")}.json");
+            var techPatch = new TechnologyPatch();
+            techPatch.TechId = tech.name;
+            techPatch.Year = tech.Year;
+            techPatch.TreeYOffset = tech.Offset;
+            techPatch.DependencyIds = tech.Dependencies.Select(d => d.name).ToList();
+            File.WriteAllText(techFile, JsonConvert.SerializeObject(techPatch, Formatting.Indented));
+        }
+        Logger.LogInfo("Technologies Dumped");
     }
     
     private Technology FindBaseTech(List<Technology> technologies, String baseId)
@@ -268,7 +353,6 @@ public class TechnologiesInjector
         var caches = technologies.Where(t => t.gameObject.GetComponent<CacheSize>() != null).ToList();
         
         ReEnumerateTechByYear(caches);
-        
         
     }
 
