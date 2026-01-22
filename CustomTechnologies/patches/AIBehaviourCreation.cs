@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using CustomTechnologies.data;
 using HarmonyLib;
 using ProcessorTycoon.AISystem;
@@ -40,6 +42,30 @@ class AIBehaviourCreation_FindBestCpuDesign
         CpuDesign usedDesign = cpuDesignArray[0];
         __instance.bestCpus.Add(usedDesign);
         __instance.UpdateDesignCache(usedDesign);
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(AIBehaviourCreation), "SelectPackage")]
+
+class AIBehaviourCreation_SelectPackage
+{
+    
+    public static bool Prefix(AIBehaviourCreation __instance, List<Package> packages, ref Package __result)
+    {
+        __result = packages.Last();
+        // where possible non-industrial markets should use the best PGA/LGA package they have
+        if (__instance.MarketFocus != AIBehaviourCreation.TargetMarket.Industries && !__result.IsPgaOrLga)
+        {
+            foreach (var package in packages)
+            {
+                if (package.IsPgaOrLga)
+                {
+                    __result = package;
+                }
+            }
+        }
+        
         return false;
     }
 }
