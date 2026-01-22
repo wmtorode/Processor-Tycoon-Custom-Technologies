@@ -1,0 +1,18 @@
+{
+  "Research" : {
+    "BaseId": "300 mm",
+    "Year": 2029,
+    "ResearchDays": 300,
+    "MonthlyCost": 1000000000,
+    "TreeYOffset": -5,
+    "DependencyIds": [
+      "300 mm"
+    ]
+  },
+  "Name": "450 mm Wafer",
+  "NormalName": "450 mm",
+  "WaferSize": 450,
+  "ConstructionCostMultiplier": 1.1,
+  "MaintainanceCostMultiplier": 1.2,
+  "UpgradeCost": 75000000
+}

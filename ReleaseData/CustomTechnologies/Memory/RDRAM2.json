@@ -1,0 +1,19 @@
+{
+  "Research" : {
+    "BaseId": "SDR",
+    "Year": 1998,
+    "ResearchDays": 250,
+    "MonthlyCost": 15500000,
+    "TreeYOffset": 1,
+    "DependencyIds": [
+      "RDRAM"
+    ]
+  },
+  "Name": "RDRAM2",
+  "IpsThreshold": 900000,
+  "CacheIps": 32000,
+  "CacheIpcBoost": 1.35,
+  "UnitCostPerCache": 3,
+  "ProjectCost": 110000000,
+  "ProjectTime": 40
+}

@@ -1,0 +1,27 @@
+{
+  "Research" : {
+    "BaseId": "PLCC 1980",
+    "Year": 1990,
+    "ResearchDays": 105,
+    "MonthlyCost": 4000000,
+    "TreeYOffset": -3,
+    "DependencyIds": [
+      "PLCC 1985"
+    ]
+  },
+  "Name": "PLCC 1990",
+  "BaseName": "PLCC",
+  "MinSize": 15,
+  "MaxSize": 45,
+  "MinPinCount": 32,
+  "MaxPinCount": 84,
+  "MinCacheKB": 8,
+  "MaxCacheKB": 24,
+  "ConsumptionMultiplier": 0.3,
+  "SafeTemperature": 70.0,
+  "ThermalEfficiency": 0.78,
+  "BaseUnitCost": 15,
+  "ProjectCost": 12000000,
+  "ProjectTime": 40,
+  "SupportsMultipleCores": false
+}

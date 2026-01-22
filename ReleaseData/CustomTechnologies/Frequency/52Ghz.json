@@ -1,0 +1,14 @@
+{
+  "Research" : {
+    "BaseId": "5.00 GHz",
+    "Year": 2023,
+    "ResearchDays": 45,
+    "MonthlyCost": 125000000,
+    "TreeYOffset": 0,
+    "DependencyIds": [
+      "5.00 GHz"
+    ]
+  },
+  "Name": "5.20 GHz",
+  "Frequency": 5200000,
+}

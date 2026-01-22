@@ -1,0 +1,15 @@
+{
+  "Research" : {
+    "BaseId": "Octa Core",
+    "Year": 2022,
+    "ResearchDays": 150,
+    "MonthlyCost": 200000000,
+    "TreeYOffset": -1,
+    "DependencyIds": [
+      "Octa Core"
+    ]
+  },
+  "Name": "12 Core",
+  "EnablesSmt": false,
+  "CoreCount": 12
+}

@@ -1,0 +1,26 @@
+{
+  "Research" : {
+    "BaseId": "1nm",
+    "Year": 2035,
+    "ResearchDays": 250,
+    "MonthlyCost": 800000000,
+    "TreeYOffset": -4,
+    "DependencyIds": [
+      "1nm"
+    ]
+  },
+  "Name": "0.7nm",
+  "MinimumYieldRate": 5,
+  "MaximumYieldRate": 95,
+  "LearningRequirement": 50,
+  "TransistorDensity": 155000000,
+  "PowerConsumptionReduction": 15000,
+  "CacheCostReduction": 18,
+  "MulticorePenaltyReduction": 0.12,
+  "ProjectCost": 800000000,
+  "ProjectTime": 100,
+  "FailureRateOffset": 0.085 
+
+  
+  
+}
