@@ -16,6 +16,8 @@ public class CustomTechConfig
     public static ConfigEntry<string> TechDumpDir;
     public static ConfigEntry<bool> DebugMode;
     public static ConfigEntry<bool> DumpTech;
+    public static ConfigEntry<int> YearAiCanResearchProjects;
+    public static ConfigEntry<int> YearPlayerCanResearchProjects;
     
     public static void InitConfig(ConfigFile configFile)
     {
@@ -50,6 +52,14 @@ public class CustomTechConfig
         TechPatchDir = configFile.Bind("Tech", "Patches", 
             "CustomTechnologies/Patches", new ConfigDescription(
                 "Directories where existing technologies can be patched, ; separated"));
+        
+        YearAiCanResearchProjects = configFile.Bind("Research", "YearAiCanResearchProjects", 
+            2030, new ConfigDescription(
+                "Year AI can use research projects, default 2030"));
+        
+        YearPlayerCanResearchProjects = configFile.Bind("Research", "YearPlayerCanResearchProjects", 
+            2030, new ConfigDescription(
+                "Year player can use research projects, default 2030"));
         
         DebugMode = configFile.Bind("Debug", "Debug", 
             false, new ConfigDescription(
