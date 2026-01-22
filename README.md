@@ -1,5 +1,8 @@
 # Processor Tycoon Custom Technologies
 
+> [!WARNING]
+> Adding or removing custom technologies requires a new game. Do not add or remove technologies while using an existing save game, as this will likely cause issues or crashes.
+
 This mod allows you to create and add custom technologies to Processor Tycoon. You can define new process nodes, packages, memory types, frequencies, wafer sizes, core counts, and cache upgrades using JSON files.
 
 ## Configuration (.cfg)
