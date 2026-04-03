@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace CustomTechnologies.data;
 
@@ -19,7 +20,10 @@ public class ProcessNodeTechnology: ICustomTech
     public int ProjectTime;
     public float FailureRateOffset;
 
+    [JsonIgnore]
     public ResearchTechnology ResearchTechnology => Research;
+    [JsonIgnore]
     public string TechId => Name;
+    [JsonIgnore]
     public TechType Type => TechType.ProcessNode;
 }

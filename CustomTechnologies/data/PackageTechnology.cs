@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace CustomTechnologies.data;
 
@@ -21,7 +22,12 @@ public class PackageTechnology: ICustomTech
     public int ProjectTime;
     public bool SupportsMultipleCores;
 
+    [JsonIgnore]
     public ResearchTechnology ResearchTechnology => Research;
+    
+    [JsonIgnore]
     public string TechId => Name;
+    
+    [JsonIgnore]
     public TechType Type => TechType.Package;
 }

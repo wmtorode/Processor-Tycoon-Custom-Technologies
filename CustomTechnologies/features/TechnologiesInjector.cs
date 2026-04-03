@@ -322,7 +322,6 @@ public class TechnologiesInjector
 
     private PackageTechnology DumpPackage(Package package)
     {
-        Logger.LogInfo($"package null? `{package == null}`");
         var packageTech =  new PackageTechnology();
         packageTech.Name = package.Name;
         packageTech.BaseName = package.baseName;
