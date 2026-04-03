@@ -8,6 +8,7 @@ using CustomTechnologies.data;
 using ProcessorTycoon.Hardware;
 using ProcessorTycoon.Hardware.Math;
 using ProcessorTycoon.ResearchSystem;
+using Unity.Audio;
 using UnityEngine;
 
 
@@ -220,15 +221,71 @@ public class TechnologiesInjector
         
         foreach (var tech in researchDataProvider.allTechnologies)
         {
-            var techFile = Path.Combine(directory, $"{tech.name.Replace(" ", "")}.json");
+            var techPatchFile = Path.Combine(directory, $"{tech.name.Replace(" ", "")}_patch.json");
             var techPatch = new TechnologyPatch();
             techPatch.TechId = tech.name;
             techPatch.Year = tech.Year;
             techPatch.TreeYOffset = tech.Offset;
             techPatch.DependencyIds = tech.Dependencies.Select(d => d.name).ToList();
-            File.WriteAllText(techFile, JsonConvert.SerializeObject(techPatch, Formatting.Indented));
+            File.WriteAllText(techPatchFile, JsonConvert.SerializeObject(techPatch, Formatting.Indented));
         }
         Logger.LogInfo("Technologies Dumped");
+    }
+
+    public void DumpTechnology(Technology tech, String directory)
+    {
+        if (!Directory.Exists(directory))
+            Directory.CreateDirectory(directory);
+        
+        var research = new ResearchTechnology();
+            research.BaseId = tech.name;
+            research.Year = tech.Year;
+            research.ResearchDays = tech.BaseTime;
+            research.MonthlyCost = tech.Cost;
+            research.TreeYOffset = tech.Offset;
+            research.DependencyIds = tech.Dependencies.Select(d => d.name).ToList();
+
+            var techFile = Path.Combine(directory, $"{tech.name.Replace(" ", "")}_full.json");
+            switch (tech.Type)
+            {
+                case TechnologyType.Package:
+                    var package = DumpPackage(tech.gameObject.GetComponent<Package>());
+                    package.Research = research;
+                    File.WriteAllText(techFile, JsonConvert.SerializeObject(package, Formatting.Indented));
+                    break;
+                case TechnologyType.CacheSize:
+                    var cacheSize = DumpCache(tech.gameObject.GetComponent<CacheSize>());
+                    cacheSize.Research = research;
+                    File.WriteAllText(techFile, JsonConvert.SerializeObject(cacheSize, Formatting.Indented));
+                    break;
+                case TechnologyType.Frequency:
+                    var frequency = DumpFrequency(tech.gameObject.GetComponent<Frequency>());
+                    frequency.Research = research;
+                    File.WriteAllText(techFile, JsonConvert.SerializeObject(frequency, Formatting.Indented));
+                    break;
+                case TechnologyType.Lithography:
+                    var node = DumpProcessNode(tech.gameObject.GetComponent<ProcessNode>());
+                    node.Research = research;
+                    File.WriteAllText(techFile, JsonConvert.SerializeObject(node, Formatting.Indented));
+                    break;
+                case TechnologyType.Memory:
+                    var memory = DumpMemory(tech.gameObject.GetComponent<Memory>());
+                    memory.Research = research;
+                    File.WriteAllText(techFile, JsonConvert.SerializeObject(memory, Formatting.Indented));
+                    break;
+                case TechnologyType.Multicore:
+                    var core = DumpMultiCore(tech.gameObject.GetComponent<Multicore>());
+                    core.Research = research;
+                    File.WriteAllText(techFile, JsonConvert.SerializeObject(core, Formatting.Indented));
+                    break;
+                case TechnologyType.WaferSize:
+                    var wafer = DumpWafer(tech.gameObject.GetComponent<WaferSize>());
+                    wafer.Research = research;
+                    File.WriteAllText(techFile, JsonConvert.SerializeObject(wafer, Formatting.Indented));
+                    break;
+            }
+            
+            Logger.LogInfo($"Dumped {tech.name}");
     }
     
     private Technology FindBaseTech(List<Technology> technologies, String baseId)
@@ -263,6 +320,28 @@ public class TechnologiesInjector
         package.SupportsMultipleCores = packageTechnology.SupportsMultipleCores;
     }
 
+    private PackageTechnology DumpPackage(Package package)
+    {
+        Logger.LogInfo($"package null? `{package == null}`");
+        var packageTech =  new PackageTechnology();
+        packageTech.Name = package.Name;
+        packageTech.BaseName = package.baseName;
+        packageTech.MinSize = package.MinSize;
+        packageTech.MaxSize = package.MaxSize;
+        packageTech.MinPinCount = package.MinPinCount;
+        packageTech.MaxPinCount = package.MaxPinCount;
+        packageTech.MinCacheKB = package.MinCacheKB;
+        packageTech.MaxCacheKB = package.MaxCacheKB;
+        packageTech.ConsumptionMultiplier = package.ConsumptionMultiplier;
+        packageTech.SafeTemperature = package.SafeTemperature;
+        packageTech.ThermalEfficiency = package.ThermalEfficiency;
+        packageTech.BaseUnitCost = package.BaseUnitCost;
+        packageTech.ProjectCost = package.ProjectCost;
+        packageTech.ProjectTime = package.ProjectTime;
+        packageTech.SupportsMultipleCores = package.SupportsMultipleCores;
+        return packageTech;
+    }
+
     private void InjectProcessNodes(ProcessNode processNode, ProcessNodeTechnology processNodeTechnology)
     {
         processNode.Name = processNodeTechnology.Name;
@@ -277,6 +356,24 @@ public class TechnologiesInjector
         processNode.ProjectTime = processNodeTechnology.ProjectTime;
         processNode.FailureRateOffset = processNodeTechnology.FailureRateOffset;
     }
+
+    private ProcessNodeTechnology DumpProcessNode(ProcessNode processNode)
+    {
+        var processNodeTechnology = new ProcessNodeTechnology();
+        processNodeTechnology.Name = processNode.Name;
+        processNodeTechnology.MinimumYieldRate = processNode.MinimumYieldRate;
+        processNodeTechnology.MaximumYieldRate = processNode.MaximumYieldRate;
+        processNodeTechnology.CacheCostReduction = processNode.CacheCostReduction;
+        processNodeTechnology.LearningRequirement = processNode.LearningRequirement;
+        processNodeTechnology.TransistorDensity = processNode.TransistorDensity;
+        processNodeTechnology.PowerConsumptionReduction = processNode.PowerConsumptionReduction;
+        processNodeTechnology.PowerConsumptionReduction = processNode.PowerConsumptionReduction;
+        processNodeTechnology.MulticorePenaltyReduction = processNode.MulticorePenaltyReduction;
+        processNodeTechnology.ProjectCost = processNode.ProjectCost;
+        processNodeTechnology.ProjectTime = processNode.ProjectTime;
+        processNodeTechnology.FailureRateOffset = processNode.FailureRateOffset;
+        return processNodeTechnology;
+    }
     
     private void InjectMemory(Memory memory, MemoryTechnology memoryTechnology)
     {
@@ -289,10 +386,31 @@ public class TechnologiesInjector
         memory.ProjectTime = memoryTechnology.ProjectTime;
     }
 
+    private MemoryTechnology DumpMemory(Memory memory)
+    {
+        var memoryTechnology = new MemoryTechnology();
+        memoryTechnology.Name = memory.Name;
+        memoryTechnology.IpsThreshold = memory.IpsThreshold;
+        memoryTechnology.CacheIps = memory.CacheIps;
+        memoryTechnology.CacheIpcBoost = memory.CacheIpcBoost;
+        memoryTechnology.UnitCostPerCache = memory.UnitCostPerCache;
+        memoryTechnology.ProjectCost = memory.ProjectCost;
+        memoryTechnology.ProjectTime = memory.ProjectTime;
+        return memoryTechnology;
+    }
+
     private void InjectFrequency(Frequency frequency, FrequencyTechnology frequencyTechnology)
     {
         frequency.Name = frequencyTechnology.Name;
         frequency.Value = frequencyTechnology.Frequency;
+    }
+
+    private FrequencyTechnology DumpFrequency(Frequency frequency)
+    {
+        var frequencyTechnology = new FrequencyTechnology();
+        frequencyTechnology.Name = frequency.Name;
+        frequencyTechnology.Frequency = frequency.Value;
+        return frequencyTechnology;
     }
     
     private void InjectCache(CacheSize cache, CacheTechnology cacheTechnology)
@@ -301,6 +419,16 @@ public class TechnologiesInjector
         cache.Steps = cacheTechnology.L1Steps4K;
         cache.StepsL2 = cacheTechnology.L2Steps16K;
         cache.StepsL3 = cacheTechnology.L3Steps64K;
+    }
+
+    private CacheTechnology DumpCache(CacheSize cache)
+    {
+        var cacheTechnology = new CacheTechnology();
+        cacheTechnology.Name = cache.Name;
+        cacheTechnology.L1Steps4K = cache.Steps;
+        cacheTechnology.L2Steps16K = cache.StepsL2;
+        cacheTechnology.L3Steps64K = cache.StepsL3;
+        return cacheTechnology;
     }
     
     private void InjectWafer(WaferSize wafer, WaferTechnology waferTechnology)
@@ -313,11 +441,32 @@ public class TechnologiesInjector
         wafer.UpgradeCost = waferTechnology.UpgradeCost;
     }
 
+    private WaferTechnology DumpWafer(WaferSize wafer)
+    {
+        var waferTechnology = new WaferTechnology();
+        waferTechnology.Name = wafer.Name;
+        waferTechnology.NormalName = wafer.NormalName;
+        waferTechnology.WaferSize = wafer.Value;
+        waferTechnology.ConstructionCostMultiplier = wafer.ConstructionCostMultiplier;
+        waferTechnology.MaintainanceCostMultiplier = wafer.MaintainanceCostMultiplier;
+        waferTechnology.UpgradeCost = wafer.UpgradeCost;
+        return waferTechnology;
+    }
+
     private void InjectCores(Multicore multicore, MultiCoreTechnology multicoreTechnology)
     {
         multicore.Name = multicoreTechnology.Name;
         multicore.CoreCount = multicoreTechnology.CoreCount;
         multicore.EnablesSmt = multicoreTechnology.EnablesSmt;
+    }
+
+    private MultiCoreTechnology DumpMultiCore(Multicore multicore)
+    {
+        var multiCoreTechnology = new MultiCoreTechnology();
+        multiCoreTechnology.Name = multicore.Name;
+        multiCoreTechnology.CoreCount = multicore.CoreCount;
+        multiCoreTechnology.EnablesSmt = multicore.EnablesSmt;
+        return multiCoreTechnology;
     }
 
     private void ReEnumerateTechnologies(List<Technology> technologies)
