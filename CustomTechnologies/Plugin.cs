@@ -70,6 +70,12 @@ public class CustomTechnologiesPlugin : BaseUnityPlugin
             TechnologiesInjector.Instance.LoadTechPatches(techPath);
         }
         
+        foreach (var companyDir in CustomTechConfig.CompaniesDir.Value.Split(";"))
+        {
+            var companyPath = Path.Combine(Paths.PluginPath, companyDir);
+            CompaniesInjector.Instance.LoadCompanies(companyPath);
+        }
+        
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), "ca.jwolf.customTech");
 
     }

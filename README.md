@@ -23,6 +23,9 @@ The mod generates a configuration file (usually found in `BepInEx/config/CustomT
 * **YearAiCanResearchProjects**: The year the AI starts being able to use research projects. Default: `2030`.
 * **YearPlayerCanResearchProjects**: The year the player starts being able to use research projects. Default: `2030`.
 
+### [Companies]
+* **Companies**: Semicolon-separated list of directories where custom companies are located. Default: `CustomTechnologies/Companies`.
+
 ---
 
 ## Research Object
@@ -328,3 +331,40 @@ Technology patches allow you to modify the research tree properties of existing 
 * **Year** (Optional): Overrides the availability year. If omitted, the original value is kept.
 * **TreeYOffset** (Optional): Overrides the vertical offset in the research tree UI. If omitted, the original value is kept.
 * **DependencyIds** (Optional): Overrides the list of required technologies. If omitted, the original dependencies are kept.
+
+---
+
+## Custom Companies
+
+> [!CAUTION]
+> Custom Companies is a work in progress and is a considered a pre-release feature. Use with caution.
+
+This feature allows you to spawn custom AI-controlled companies into the game.
+
+### Example
+```json
+{
+  "BaseCompanyName": "Inlet",
+  "CompanyName": "Moon",
+  "FullName": "Moon Macro Systems",
+  "InitialCash": 125000000,
+  "StartingTechYear": 1981,
+  "InitialFactoryCapacity": 12,
+  "FoundingYear": 1977,
+  "FoundingMonth": 2,
+  "SpawnYear": 1977,
+  "SpawnMonth": 2
+}
+```
+
+### Fields
+* **BaseCompanyName**: The internal name of the base company this one should mimic for initial behavior or data.
+* **CompanyName**: The short name of the company used in most UI elements.
+* **FullName**: The full name of the company.
+* **InitialCash**: The amount of cash the company starts with when it spawns.
+* **StartingTechYear**: The technology level the company starts with (expressed as a year).
+* **InitialFactoryCapacity**: The initial production capacity of the company's factory.
+* **FoundingYear**: The year the company was founded.
+* **FoundingMonth**: The month the company was founded.
+* **SpawnYear**: The year the company should spawn into the game world.
+* **SpawnMonth**: The month the company should spawn into the game world.

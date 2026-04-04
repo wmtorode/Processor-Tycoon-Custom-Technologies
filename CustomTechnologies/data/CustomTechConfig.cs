@@ -14,10 +14,13 @@ public class CustomTechConfig
     public static ConfigEntry<string> CacheTechDir;
     public static ConfigEntry<string> TechPatchDir;
     public static ConfigEntry<string> TechDumpDir;
+    public static ConfigEntry<string> CompaniesDir;
     public static ConfigEntry<bool> DebugMode;
     public static ConfigEntry<bool> DumpTech;
     public static ConfigEntry<int> YearAiCanResearchProjects;
     public static ConfigEntry<int> YearPlayerCanResearchProjects;
+    
+    
     
     public static void InitConfig(ConfigFile configFile)
     {
@@ -72,6 +75,10 @@ public class CustomTechConfig
         TechDumpDir = configFile.Bind("Debug", "TechDump", 
             "CustomTechnologies/Dump", new ConfigDescription(
                 "Directories where existing technologies will be dumped"));
+
+        CompaniesDir = configFile.Bind("Companies", "Companies",
+            "CustomTechnologies/Companies", new ConfigDescription(
+                "Directories where custom companies can be added, ; separated"));
         
     }
 }
