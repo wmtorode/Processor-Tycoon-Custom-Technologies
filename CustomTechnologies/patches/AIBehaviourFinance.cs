@@ -15,7 +15,6 @@ class AIBehaviourFinance_OnTick
     
     public static bool Prepare()
     {
-        return true;
         return CustomTechConfig.DebugMode.Value;
     }
 

@@ -23,7 +23,7 @@ class AIBehaviourCreation_FindBestCpuDesign
         CustomTechnologiesPlugin.Logger.LogInfo($"Found design:");
         CustomTechnologiesPlugin.Logger.LogInfo($"Node: {design.ProcessNode?.name}");
         CustomTechnologiesPlugin.Logger.LogInfo($"Memory: {design.Memory?.name}");
-        CustomTechnologiesPlugin.Logger.LogInfo($"Package: {design.Package?.name}");
+        CustomTechnologiesPlugin.Logger.LogInfo($"Package: {design.Package?.Name}");
         CustomTechnologiesPlugin.Logger.LogInfo($"Cost: {design.ProjectCost}");
         CustomTechnologiesPlugin.Logger.LogInfo($"Time: {design.ProjectTime}");
         CustomTechnologiesPlugin.Logger.LogInfo($"Market: {design.TargetMarket}");
@@ -51,7 +51,7 @@ class AIBehaviourCreation_FindBestCpuDesign
 class AIBehaviourCreation_SelectPackage
 {
     
-    public static bool Prefix(AIBehaviourCreation __instance, List<Package> packages, ref Package __result)
+    public static bool Prefix(AIBehaviourCreation __instance, List<IPackage> packages, ref IPackage __result)
     {
         __result = packages.Last();
         // where possible non-industrial markets should use the best PGA/LGA package they have

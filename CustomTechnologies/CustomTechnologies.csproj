@@ -52,7 +52,7 @@
 
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
-            <HintPath>..\..\..\..\Processor Tycoon 0.2.1b1 (Windows)\Processor Tycoon\Processor Tycoon Beta_Data\Managed\Assembly-CSharp.dll</HintPath>
+            <HintPath>..\..\..\..\Processor Tycoon 0.2.2a2 (Windows)\Processor Tycoon\Processor Tycoon Beta_Data\Managed\Assembly-CSharp.dll</HintPath>
         </Reference>
     </ItemGroup>
 </Project>
