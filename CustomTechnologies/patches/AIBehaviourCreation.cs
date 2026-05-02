@@ -66,6 +66,19 @@ class AIBehaviourCreation_SelectPackage
             }
         }
         
+        // if the market is industries, then should use the best Dip or PLCC package available
+        if (__instance.MarketFocus == AIBehaviourCreation.TargetMarket.Industries)
+        {
+            for (int index = packages.Count - 1; index >= 0; --index)
+            {
+                if (packages[index].IsDip || packages[index].IsPlcc)
+                {
+                    __result = packages[index];
+                    break;
+                }
+            }
+        }
+        
         return false;
     }
 }
