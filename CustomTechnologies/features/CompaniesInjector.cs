@@ -100,6 +100,21 @@ public class CompaniesInjector
             prefab.initialData.money = customCompany.InitialCash;
             prefab.initialData.factory.ProductionCapacity = customCompany.InitialFactoryCapacity;
             prefab.initialData.technologyYear = customCompany.StartingTechYear;
+            prefab.LogoList.logos = new List<CompanyLogoList.Logo>();
+
+            if (customCompany.Colour != null)
+            {
+                Color colour;
+                ColorUtility.TryParseHtmlString(customCompany.Colour, out colour);
+                prefab.Color = colour;
+            }
+            
+            if (customCompany.DarkModeColour != null)
+            {
+                Color colour;
+                ColorUtility.TryParseHtmlString(customCompany.DarkModeColour, out colour);
+                prefab.DarkModeColor = colour;
+            }
 
             var company = new CompanySpawner.HistoricalCompany();
             company.companyPrefab = prefab;

@@ -8,5 +8,7 @@
   "FoundingYear": 1977,
   "FoundingMonth": 2,
   "SpawnYear": 1977,
-  "SpawnMonth": 2
+  "SpawnMonth": 2,
+  "Colour": "#e8600c",
+  "DarkModeColour": "#e8600c"
 }
