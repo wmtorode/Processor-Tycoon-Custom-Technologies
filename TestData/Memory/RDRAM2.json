@@ -10,7 +10,7 @@
     ]
   },
   "Name": "RDRAM2",
-  "IpsThreshold": 900000,
+  "IpsThreshold": 700000,
   "CacheIps": 32000,
   "CacheIpcBoost": 1.35,
   "UnitCostPerCache": 3,

@@ -33,6 +33,9 @@ public class TechnologiesInjector
     
     private List<ICustomTech> customTechnologies;
     private List<TechnologyPatch> patches;
+
+    private int maxL1CacheSteps = 0;
+    private const int defaultL1CacheSteps = 32;
     
     private void Initialize()
     {
@@ -89,85 +92,110 @@ public class TechnologiesInjector
 
     public void InjectTechnologies(ResearchDataProvider  researchDataProvider)
     {
+        
         foreach (var customTech in customTechnologies)
         {
-
-            bool exists = researchDataProvider.allTechnologies.Exists(t => t.name == customTech.TechId);
-            if (exists)
+            try
             {
-                Logger.LogWarning($"Technology {customTech.TechId} already exists, skipping injection");
-                continue;
-            }
-            
-            var baseTech = FindBaseTech(researchDataProvider.allTechnologies, customTech.ResearchTechnology.BaseId);
 
-            if (baseTech == null)
+                bool exists = researchDataProvider.allTechnologies.ContainsKey(customTech.TechId);
+                if (exists)
+                {
+                    Logger.LogWarning($"Technology {customTech.TechId} already exists, skipping injection");
+                    continue;
+                }
+
+                var baseTech = FindBaseTech(researchDataProvider.allTechnologies, customTech.ResearchTechnology.BaseId);
+
+                if (baseTech == null)
+                {
+                    Logger.LogError(
+                        $"Unable to find BaseTech {customTech.ResearchTechnology.BaseId} for Tech {customTech.TechId}");
+                    continue;
+                }
+
+                var gameObj = GameObject.Instantiate(baseTech.gameObject);
+                gameObj.name = customTech.TechId;
+
+                var technology = gameObj.GetComponent<Technology>();
+                technology.Year = customTech.ResearchTechnology.Year;
+                technology.BaseTime = customTech.ResearchTechnology.ResearchDays;
+                technology.Cost = customTech.ResearchTechnology.MonthlyCost;
+                technology.Offset = customTech.ResearchTechnology.TreeYOffset;
+                technology.ID = customTech.TechId;
+
+                if (customTech.ResearchTechnology.Branch != null)
+                {
+                    technology.Branch = customTech.ResearchTechnology.Branch.Value;
+                }
+
+                technology.Dependencies.Clear();
+
+                switch (customTech.Type)
+                {
+                    case TechType.Package:
+                        InjectPackages(gameObj.GetComponent<Package>(), customTech as PackageTechnology);
+                        break;
+                    case TechType.ProcessNode:
+                        InjectProcessNodes(gameObj.GetComponent<ProcessNode>(), customTech as ProcessNodeTechnology);
+                        break;
+                    case TechType.Memory:
+                        InjectMemory(gameObj.GetComponent<Memory>(), customTech as MemoryTechnology);
+                        break;
+                    case TechType.Frequency:
+                        InjectFrequency(gameObj.GetComponent<Frequency>(), customTech as FrequencyTechnology);
+                        break;
+                    case TechType.Cache:
+                        InjectCache(gameObj.GetComponent<CacheSize>(), customTech as CacheTechnology);
+                        break;
+                    case TechType.WaferSize:
+                        InjectWafer(gameObj.GetComponent<WaferSize>(), customTech as WaferTechnology);
+                        break;
+                    case TechType.Multicore:
+                        InjectCores(gameObj.GetComponent<Multicore>(), customTech as MultiCoreTechnology);
+                        break;
+                }
+
+                researchDataProvider.allTechnologies.Add(technology.ID, technology);
+
+                Logger.LogInfo($"Injected Custom Technology: {customTech.TechId} type: {customTech.Type}");
+            }
+            catch (Exception ex)
             {
-                Logger.LogError($"Unable to find BaseTech {customTech.ResearchTechnology.BaseId} for Tech {customTech.TechId}");
-                continue;
+                Logger.LogError($"Failed to inject Custom Technology {customTech.TechId}: {ex.Message}");
+                throw;
             }
 
-            var gameObj = GameObject.Instantiate(baseTech.gameObject);
-            gameObj.name = customTech.TechId;
-            
-            var technology = gameObj.GetComponent<Technology>();
-            technology.Year = customTech.ResearchTechnology.Year;
-            technology.BaseTime = customTech.ResearchTechnology.ResearchDays;
-            technology.Cost = customTech.ResearchTechnology.MonthlyCost;
-            technology.Offset = customTech.ResearchTechnology.TreeYOffset;
-            technology.ID = researchDataProvider.allTechnologies.Count;
-            
-            technology.Dependencies.Clear();
-            
-            switch (customTech.Type)
-            {
-                case TechType.Package:
-                    InjectPackages(gameObj.GetComponent<Package>(), customTech as PackageTechnology);
-                    break;
-                case  TechType.ProcessNode:
-                    InjectProcessNodes(gameObj.GetComponent<ProcessNode>(), customTech as ProcessNodeTechnology);
-                    break;
-                case TechType.Memory:
-                    InjectMemory(gameObj.GetComponent<Memory>(), customTech as MemoryTechnology);
-                    break;
-                case TechType.Frequency:
-                    InjectFrequency(gameObj.GetComponent<Frequency>(), customTech as FrequencyTechnology);
-                    break;
-                case TechType.Cache:
-                    InjectCache(gameObj.GetComponent<CacheSize>(), customTech as CacheTechnology);
-                    break;
-                case TechType.WaferSize:
-                    InjectWafer(gameObj.GetComponent<WaferSize>(), customTech as WaferTechnology);
-                    break;
-                case TechType.Multicore:
-                    InjectCores(gameObj.GetComponent<Multicore>(), customTech as MultiCoreTechnology);
-                    break;
-            }
-            
-            researchDataProvider.allTechnologies.Add(technology);
-            
-            Logger.LogInfo($"Injected Custom Technology: {customTech.TechId} type: {customTech.Type}");
-            
         }
 
         foreach (var technology in customTechnologies)
         {
-            var tech = FindBaseTech(researchDataProvider.allTechnologies, technology.TechId);
-            foreach (var dependencyId in technology.ResearchTechnology.DependencyIds)
-                tech.Dependencies.Add(FindBaseTech(researchDataProvider.allTechnologies, dependencyId));
-            
+            try
+            {
+                var tech = FindBaseTech(researchDataProvider.allTechnologies, technology.TechId);
+                if (tech == null)
+                    Logger.LogError($"Technology {technology.TechId} not found");
+                foreach (var dependencyId in technology.ResearchTechnology.DependencyIds)
+                    tech.Dependencies.Add(FindBaseTech(researchDataProvider.allTechnologies, dependencyId));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to inject Custom Technology {technology.TechId} dependencies: {ex.Message}");
+                throw;
+            }
+
         }
         
-        ReEnumerateTechnologies(researchDataProvider.allTechnologies);
-        researchDataProvider.allTechnologies =
-            researchDataProvider.allTechnologies.OrderBy(tech => tech.ID).ToList();
-        
-        Logger.LogInfo("Technologies Injected, new ID Ordering:");
-        foreach (var tech in researchDataProvider.allTechnologies)
-        {
-            Logger.LogInfo($"{tech.ID}: {tech.name}");
-        }
-        UpdateHardwareMath(researchDataProvider.allTechnologies);
+        // ReEnumerateTechnologies(researchDataProvider.allTechnologies);
+        // researchDataProvider.allTechnologies =
+        //     researchDataProvider.allTechnologies.OrderBy(tech => tech.ID).ToList();
+        //
+        // Logger.LogInfo("Technologies Injected, new ID Ordering:");
+        // foreach (var tech in researchDataProvider.allTechnologies)
+        // {
+        //     Logger.LogInfo($"{tech.ID}: {tech.name}");
+        // }
+        UpdateHardwareMath(researchDataProvider.allTechnologies.Values.ToList());
 
     }
 
@@ -219,7 +247,7 @@ public class TechnologiesInjector
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
         
-        foreach (var tech in researchDataProvider.allTechnologies)
+        foreach (var tech in researchDataProvider.allTechnologies.Values)
         {
             var techPatchFile = Path.Combine(directory, $"{tech.name.Replace(" ", "")}_patch.json");
             var techPatch = new TechnologyPatch();
@@ -244,6 +272,7 @@ public class TechnologiesInjector
             research.MonthlyCost = tech.Cost;
             research.TreeYOffset = tech.Offset;
             research.DependencyIds = tech.Dependencies.Select(d => d.name).ToList();
+            research.Branch = tech.Branch;
 
             var techFile = Path.Combine(directory, $"{tech.name.Replace(" ", "")}_full.json");
             switch (tech.Type)
@@ -288,15 +317,13 @@ public class TechnologiesInjector
             Logger.LogInfo($"Dumped {tech.name}");
     }
     
-    private Technology FindBaseTech(List<Technology> technologies, String baseId)
+    private Technology FindBaseTech(Dictionary<string, Technology> technologies, String baseId)
     {
-        foreach (var technology in technologies)
+        if (technologies.ContainsKey(baseId))
         {
-            if (technology.name == baseId)
-            {
-                return technology;
-            }
+            return technologies[baseId];
         }
+        
         return null;
     }
     
@@ -418,6 +445,11 @@ public class TechnologiesInjector
         cache.Steps = cacheTechnology.L1Steps4K;
         cache.StepsL2 = cacheTechnology.L2Steps16K;
         cache.StepsL3 = cacheTechnology.L3Steps64K;
+
+        if (cacheTechnology.L1Steps4K > maxL1CacheSteps)
+        {
+            maxL1CacheSteps = cacheTechnology.L1Steps4K;
+        }
     }
 
     private CacheTechnology DumpCache(CacheSize cache)
@@ -433,7 +465,7 @@ public class TechnologiesInjector
     private void InjectWafer(WaferSize wafer, WaferTechnology waferTechnology)
     {
         wafer.Name = waferTechnology.Name;
-        wafer.NormalName = waferTechnology.NormalName;
+        wafer.ShortName = waferTechnology.NormalName;
         wafer.Value = waferTechnology.WaferSize;
         wafer.ConstructionCostMultiplier = waferTechnology.ConstructionCostMultiplier;
         wafer.MaintainanceCostMultiplier = waferTechnology.MaintainanceCostMultiplier;
@@ -444,7 +476,7 @@ public class TechnologiesInjector
     {
         var waferTechnology = new WaferTechnology();
         waferTechnology.Name = wafer.Name;
-        waferTechnology.NormalName = wafer.NormalName;
+        waferTechnology.NormalName = wafer.ShortName;
         waferTechnology.WaferSize = wafer.Value;
         waferTechnology.ConstructionCostMultiplier = wafer.ConstructionCostMultiplier;
         waferTechnology.MaintainanceCostMultiplier = wafer.MaintainanceCostMultiplier;
@@ -554,6 +586,12 @@ public class TechnologiesInjector
         foreach (var core in HardwareMath.cores)
         {
             Logger.LogInfo($"Core: {core}");
+        }
+
+        if (maxL1CacheSteps > defaultL1CacheSteps)
+        {
+            Logger.LogInfo($"Updating CpuMath L1 Cache Steps from {CpuMath.maxL1CacheSliderValue} to {maxL1CacheSteps}");
+            CpuMath.SetMaxL1CacheSliderSteps(maxL1CacheSteps);
         }
     }
 

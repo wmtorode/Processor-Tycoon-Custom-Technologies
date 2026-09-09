@@ -127,7 +127,7 @@ public class CompaniesInjector
             
             prefab.transform.SetParent(companySpawner.aiCompanies.transform, false);
             prefab.SaveID = SaveIDHandler.Instance.NewID();
-            prefab.Initialize(companySpawner.historicalCompanies.IndexOf(company));
+            prefab.Initialize();
             if (prefab.IsFoundry)
                 PopupManager.Instance.InstantiateCompetitorNotification((ICompany) prefab, Popup.CompetitorNofication.OfferingFoundryServices);
             

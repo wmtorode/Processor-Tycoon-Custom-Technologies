@@ -11,4 +11,5 @@ public class ResearchTechnology
     public float MonthlyCost = 0f;
     public int TreeYOffset = 0;
     public List<String> DependencyIds = new List<string>();
+    public int? Branch = null;
 }

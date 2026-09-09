@@ -7,20 +7,21 @@
     "TreeYOffset": -3,
     "DependencyIds": [
       "PLCC 1980"
-    ]
+    ],
+    "Branch": 3
   },
   "Name": "PLCC 1985",
   "BaseName": "PLCC",
   "MinSize": 15,
-  "MaxSize": 35,
+  "MaxSize": 30,
   "MinPinCount": 32,
   "MaxPinCount": 72,
   "MinCacheKB": 8,
   "MaxCacheKB": 16,
   "ConsumptionMultiplier": 0.3,
-  "SafeTemperature": 65.0,
+  "SafeTemperature": 60.0,
   "ThermalEfficiency": 0.75,
-  "BaseUnitCost": 15,
+  "BaseUnitCost": 10,
   "ProjectCost": 12000000,
   "ProjectTime": 40,
   "SupportsMultipleCores": false

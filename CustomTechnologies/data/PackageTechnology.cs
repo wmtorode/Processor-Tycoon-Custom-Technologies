@@ -21,6 +21,7 @@ public class PackageTechnology: ICustomTech
     public float ProjectCost;
     public int ProjectTime;
     public bool SupportsMultipleCores;
+    public int Branch;
 
     [JsonIgnore]
     public ResearchTechnology ResearchTechnology => Research;

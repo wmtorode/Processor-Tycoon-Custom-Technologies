@@ -8,7 +8,8 @@ using HarmonyLib;
 
 namespace CustomTechnologies;
 
-[BepInPlugin("ca.jwolf.customTech", "Custom Technologies", "1.0.0")]
+
+[BepInPlugin("ca.jwolf.customTech", "Custom Technologies", "0.0.0")]
 public class CustomTechnologiesPlugin : BaseUnityPlugin
 {
     internal static new ManualLogSource Logger;
@@ -17,7 +18,10 @@ public class CustomTechnologiesPlugin : BaseUnityPlugin
     {
         // Plugin startup logic
         Logger = base.Logger;
-        Logger.LogInfo($"Custom Technologies is loaded!");
+        
+        // Heaven forbid bepin lets us set a version off the assembly version so log it here instead
+        var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        Logger.LogInfo($"Custom Technologies is loaded, using assembly version: {version}");
         
         // load config
         CustomTechConfig.InitConfig(Config);

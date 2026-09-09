@@ -5,6 +5,7 @@ using CustomTechnologies.data;
 using HarmonyLib;
 using ProcessorTycoon.AISystem;
 using ProcessorTycoon.Hardware;
+using ProcessorTycoon.MarketSystem;
 
 namespace CustomTechnologies.patches;
 
@@ -51,11 +52,18 @@ class AIBehaviourCreation_FindBestCpuDesign
 class AIBehaviourCreation_SelectPackage
 {
     
+    // as of 0.2.16a1 or newer this patch doesn't appear to be needed anymore
+    // Todo: confirm it can be removed
+    public static bool Prepare()
+    {
+        return false;
+    }
+    
     public static bool Prefix(AIBehaviourCreation __instance, List<IPackage> packages, ref IPackage __result)
     {
         __result = packages.Last();
         // where possible non-industrial markets should use the best PGA/LGA package they have
-        if (__instance.MarketFocus != AIBehaviourCreation.TargetMarket.Industries && !__result.IsPgaOrLga)
+        if (__instance.MarketFocus != Segment.Industrial && !__result.IsPgaOrLga)
         {
             foreach (var package in packages)
             {
@@ -67,7 +75,7 @@ class AIBehaviourCreation_SelectPackage
         }
         
         // if the market is industries, then should use the best Dip or PLCC package available
-        if (__instance.MarketFocus == AIBehaviourCreation.TargetMarket.Industries)
+        if (__instance.MarketFocus == Segment.Industrial)
         {
             for (int index = packages.Count - 1; index >= 0; --index)
             {

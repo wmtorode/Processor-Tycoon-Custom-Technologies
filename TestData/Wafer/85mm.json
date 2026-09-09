@@ -1,12 +1,12 @@
 {
   "Research" : {
-    "BaseId": "76 mm",
+    "BaseId": "76 mm Wafer",
     "Year": 1976,
     "ResearchDays": 65,
     "MonthlyCost": 400000,
     "TreeYOffset": -6,
     "DependencyIds": [
-      "76 mm"
+      "76 mm Wafer"
     ]
   },
   "Name": "85 mm Wafer",

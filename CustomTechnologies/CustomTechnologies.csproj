@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <AssemblyName>CustomTechnologies</AssemblyName>
         <Product>Custom Technologies</Product>
-        <Version>1.0.0</Version>
+        <Version>1.1.1.0</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>10</LangVersion>
         <RestoreAdditionalProjectSources>
@@ -52,7 +52,7 @@
 
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
-            <HintPath>..\..\..\..\Processor Tycoon 0.2.2a2 (Windows)\Processor Tycoon\Processor Tycoon Beta_Data\Managed\Assembly-CSharp.dll</HintPath>
+            <HintPath>..\..\..\..\Processor Tycoon 0.2.16a4 (Windows)\Processor Tycoon\Processor Tycoon Beta_Data\Managed\Assembly-CSharp.dll</HintPath>
         </Reference>
     </ItemGroup>
 </Project>

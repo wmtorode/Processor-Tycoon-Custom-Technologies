@@ -47,9 +47,9 @@ class AIBehaviourResearchProject_UpdateRating
             num2 = 500;
         int difficultyLevel = Player.Instance.DifficultyLevel;
         if (difficultyLevel == 1)
-            num2 /= 2;
+            num2 /= 5;
         if (difficultyLevel == 0)
-            num2 /= 3;
+            num2 /= 10;
         if (researchProjects.Count >= num2)
             num1 = 0.0f;
         if (DateController.Instance.CurrentDate.Year < CustomTechConfig.YearAiCanResearchProjects.Value)
