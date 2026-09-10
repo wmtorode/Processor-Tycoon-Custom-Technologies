@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace CustomTechnologies.data.companies;
@@ -8,6 +9,7 @@ public class CustomCompany
     public string BaseCompanyName;
     public string CompanyName;
     public string FullName;
+    public string CompanyId;
     public float InitialCash;
     public int StartingTechYear;
     public int InitialFactoryCapacity;
@@ -20,7 +22,10 @@ public class CustomCompany
     public string Colour;
     [CanBeNull] 
     public string DarkModeColour;
-
+    
+    [CanBeNull] 
+    public List<CpuNamePattern> CpuNamePatterns;
+    
     [JsonIgnore]
     public bool hasSpawned = false;
 }

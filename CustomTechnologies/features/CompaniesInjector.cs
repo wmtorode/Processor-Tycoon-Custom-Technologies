@@ -6,7 +6,9 @@ using BepInEx.Logging;
 using CustomTechnologies.data;
 using CustomTechnologies.data.companies;
 using Newtonsoft.Json;
+using ProcessorTycoon.AISystem;
 using ProcessorTycoon.CompanySystem;
+using ProcessorTycoon.Hardware;
 using ProcessorTycoon.PopupSystem;
 using ProcessorTycoon.Save;
 using ProcessorTycoon.TimeSystem;
@@ -61,6 +63,22 @@ public class CompaniesInjector
         }
     }
 
+    public void LoadCustomCompanyFromSave(CompanySpawner companySpawner, string uniqueId, int saveId)
+    {
+        var customCompany = CustomCompanies.FirstOrDefault(t => t.CompanyId == uniqueId);
+        if (customCompany != null)
+        {
+            
+            var baseCompany = companySpawner.historicalCompanies.FirstOrDefault(
+                t => t.companyPrefab.Name == customCompany.BaseCompanyName);
+            
+            SpawnAiCompany(companySpawner, customCompany, baseCompany, saveId);
+            
+            customCompany.hasSpawned = true;
+
+        }
+    }
+
     public void InjectCompanies(CompanySpawner companySpawner)
     {
         var currentDate = DateController.Instance.CurrentDate;
@@ -94,9 +112,34 @@ public class CompaniesInjector
                 continue;
             }
             
-            var prefab = UnityEngine.Object.Instantiate<AICompany>(baseCompany.companyPrefab);
+            var prefab = SpawnAiCompany(companySpawner, customCompany, baseCompany, SaveIDHandler.Instance.NewID());
+            
+            if (prefab.IsFoundry)
+                PopupManager.Instance.InstantiateCompetitorNotification((ICompany) prefab, Popup.CompetitorNofication.OfferingFoundryServices);
+            
+            // have to fallback to reflection here as the Publicizer seems to expose multiple copies of the action, creating ambiguity
+            var onCompanySpawnedField = typeof(CompanySpawner).GetField("OnCompanySpawned", 
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance 
+                                                      | System.Reflection.BindingFlags.NonPublic);
+            if (onCompanySpawnedField != null)
+            {
+                var onCompanySpawned = onCompanySpawnedField.GetValue(companySpawner) as Action;
+                if (onCompanySpawned != null)
+                    onCompanySpawned();
+            }
+            customCompany.hasSpawned = true;
+
+            Logger.LogInfo($"Spawned Custom Company {customCompany.CompanyName} ({customCompany.FullName})");
+
+        }
+    }
+
+    private AICompany SpawnAiCompany(CompanySpawner companySpawner, CustomCompany customCompany, CompanySpawner.HistoricalCompany baseCompany, int saveId)
+    {
+        var prefab = UnityEngine.Object.Instantiate<AICompany>(baseCompany.companyPrefab);
             prefab.Name = customCompany.CompanyName;
             prefab.FullName = customCompany.FullName;
+            prefab.UniqueID = customCompany.CompanyId;
             prefab.initialData.money = customCompany.InitialCash;
             prefab.initialData.factory.ProductionCapacity = customCompany.InitialFactoryCapacity;
             prefab.initialData.technologyYear = customCompany.StartingTechYear;
@@ -141,25 +184,46 @@ public class CompaniesInjector
             };
             
             prefab.transform.SetParent(companySpawner.aiCompanies.transform, false);
-            prefab.SaveID = SaveIDHandler.Instance.NewID();
+            prefab.SaveID = saveId;
             prefab.Initialize();
-            if (prefab.IsFoundry)
-                PopupManager.Instance.InstantiateCompetitorNotification((ICompany) prefab, Popup.CompetitorNofication.OfferingFoundryServices);
-            
-            // have to fallback to reflection here as the Publicizer seems to expose multiple copies of the action, creating ambiguity
-            var onCompanySpawnedField = typeof(CompanySpawner).GetField("OnCompanySpawned", 
-                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance 
-                                                      | System.Reflection.BindingFlags.NonPublic);
-            if (onCompanySpawnedField != null)
+
+            if (customCompany.CpuNamePatterns != null)
             {
-                var onCompanySpawned = onCompanySpawnedField.GetValue(companySpawner) as Action;
-                if (onCompanySpawned != null)
-                    onCompanySpawned();
+                prefab.behaviourController.cpuNameGenerator = new CpuNameGenerator()
+                {
+                    cpuNameTemplate = ScriptableObject.CreateInstance<CpuNameTemplate>()
+                };
+                prefab.behaviourController.cpuNameGenerator.cpuNameTemplate.patterns = new List<CpuNameTemplate.Pattern>();
+                foreach (AIBehaviourCreation behaviourCreation in prefab.behaviourController.behaviourCreations)
+                {
+                    behaviourCreation.CpuNameGenerator = prefab.behaviourController.cpuNameGenerator;
+                }
+                foreach (var pattern in customCompany.CpuNamePatterns)
+                {
+                    if (pattern.UseCustomGenerator)
+                    {
+                        prefab.behaviourController.cpuNameGenerator.cpuNameTemplate.patterns.Add(new CustomNamePattern(pattern.SegmentSuffixes)
+                        {
+                            nameType = pattern.PatternType,
+                            baseName = pattern.BaseName,
+                            IntroductionYear = pattern.IntroductionYear,
+                            GenerationYear = pattern.GenerationYear
+                        });
+                    }
+                    else
+                    {
+                        prefab.behaviourController.cpuNameGenerator.cpuNameTemplate.patterns.Add(new CpuNameTemplate.Pattern
+                        {
+                            nameType = pattern.PatternType,
+                            baseName = pattern.BaseName,
+                            IntroductionYear = pattern.IntroductionYear,
+                            GenerationYear = pattern.GenerationYear
+                        });
+                    }
+                    
+                }
             }
-            customCompany.hasSpawned = true;
-
-            Logger.LogInfo($"Spawned Custom Company {customCompany.CompanyName} ({customCompany.FullName})");
-
-        }
+            
+            return prefab;
     }
 }

@@ -2,13 +2,40 @@
   "BaseCompanyName": "Inlet",
   "CompanyName": "Moon",
   "FullName": "Moon Macro Systems",
-  "InitialCash": 125000000,
-  "StartingTechYear": 1981,
-  "InitialFactoryCapacity": 12,
+  "CompanyId": "MMS",
+  "InitialCash": 1000000000,
+  "StartingTechYear": 1975,
+  "InitialFactoryCapacity": 16,
   "FoundingYear": 1977,
   "FoundingMonth": 2,
   "SpawnYear": 1977,
   "SpawnMonth": 2,
   "Colour": "#e8600c",
-  "DarkModeColour": "#e8600c"
+  "DarkModeColour": "#e8600c",
+  "CpuNamePatterns": [
+    {
+      "PatternType": "GenerationNoModel",
+      "BaseName": "Moon-",
+      "IntroductionYear": 1970,
+      "GenerationYear": 0
+    },
+    {
+      "PatternType": "GenerationNoModel",
+      "BaseName": "SPARK V",
+      "IntroductionYear": 1987,
+      "GenerationYear": 0
+    },
+    {
+      "PatternType": "GenerationRomanModel",
+      "BaseName": "UltraSPARK ",
+      "IntroductionYear": 1995,
+      "GenerationYear": 0
+    },
+    {
+      "PatternType": "GenerationRomanModel",
+      "BaseName": "UltraSPARK T",
+      "IntroductionYear": 2010,
+      "GenerationYear": 0
+    }
+  ]
 }

@@ -14,9 +14,6 @@ namespace CustomTechnologies.patches;
 
 class AIBehaviourResearchProject_UpdateRating
 {
-    
-
-    
     public static bool Prefix(AIBehaviourResearchProject __instance, ref float __result)
     {
         float num1 = 0.0f;
