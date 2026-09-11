@@ -14,28 +14,88 @@
   "DarkModeColour": "#e8600c",
   "CpuNamePatterns": [
     {
-      "PatternType": "GenerationNoModel",
+      "PatternType": "Generation",
       "BaseName": "Moon-",
       "IntroductionYear": 1970,
-      "GenerationYear": 0
+      "GenerationYear": 0,
+      "UseCustomGenerator": true,
+      "SegmentSuffixes": [
+        {
+          "Suffix": "",
+          "Segment": "DesktopHigh"
+        },
+        {
+          "Suffix": "M",
+          "Segment": "DesktopMid"
+        },
+        {
+          "Suffix": "L",
+          "Segment": "DesktopLow"
+        }
+      ]
     },
     {
-      "PatternType": "GenerationNoModel",
+      "PatternType": "Generation",
       "BaseName": "SPARK V",
       "IntroductionYear": 1987,
-      "GenerationYear": 0
+      "GenerationYear": 0,
+      "UseCustomGenerator": true,
+      "SegmentSuffixes": [
+        {
+          "Suffix": " GX",
+          "Segment": "DesktopHigh"
+        },
+        {
+          "Suffix": "",
+          "Segment": "DesktopMid"
+        },
+        {
+          "Suffix": " LP",
+          "Segment": "DesktopLow"
+        }
+      ]
     },
     {
       "PatternType": "GenerationRomanModel",
       "BaseName": "UltraSPARK ",
       "IntroductionYear": 1995,
-      "GenerationYear": 0
+      "GenerationYear": 0,
+      "UseCustomGenerator": true,
+      "SegmentSuffixes": [
+        {
+          "Suffix": " Pro",
+          "Segment": "DesktopHigh"
+        },
+        {
+          "Suffix": "",
+          "Segment": "DesktopMid"
+        },
+        {
+          "Suffix": " LP",
+          "Segment": "DesktopLow"
+        }
+      ]
     },
     {
       "PatternType": "GenerationRomanModel",
       "BaseName": "UltraSPARK T",
       "IntroductionYear": 2010,
-      "GenerationYear": 0
+      "GenerationYear": 0,
+      "UseCustomGenerator": true,
+      "SegmentSuffixes": [
+        {
+          "Suffix": " Pro",
+          "Segment": "DesktopHigh"
+        },
+        {
+          "Suffix": "",
+          "Segment": "DesktopMid"
+        },
+        {
+          "Suffix": " LP",
+          "Segment": "DesktopLow"
+        }
+      ]
     }
   ]
 }
