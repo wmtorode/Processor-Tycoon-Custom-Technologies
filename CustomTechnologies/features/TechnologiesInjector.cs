@@ -186,15 +186,6 @@ public class TechnologiesInjector
 
         }
         
-        // ReEnumerateTechnologies(researchDataProvider.allTechnologies);
-        // researchDataProvider.allTechnologies =
-        //     researchDataProvider.allTechnologies.OrderBy(tech => tech.ID).ToList();
-        //
-        // Logger.LogInfo("Technologies Injected, new ID Ordering:");
-        // foreach (var tech in researchDataProvider.allTechnologies)
-        // {
-        //     Logger.LogInfo($"{tech.ID}: {tech.name}");
-        // }
         UpdateHardwareMath(researchDataProvider.allTechnologies.Values.ToList());
 
     }
@@ -499,71 +490,6 @@ public class TechnologiesInjector
         multiCoreTechnology.EnablesSmt = multicore.EnablesSmt;
         return multiCoreTechnology;
     }
-
-    private void ReEnumerateTechnologies(List<Technology> technologies)
-    {
-        Logger.LogInfo($"ReEnumerating technologies");
-        
-        Logger.LogInfo($"ReEnumerating Wafers");
-        var wafers = technologies.Where(t => t.gameObject.GetComponent<WaferSize>() != null).ToList();
-        
-        ReEnumerateWafers(wafers);
-        
-        Logger.LogInfo($"ReEnumerating Packages");
-        var packages = technologies.Where(t => t.gameObject.GetComponent<Package>() != null).ToList();
-        
-        ReEnumerateTechByYear(packages);
-        
-        Logger.LogInfo($"ReEnumerating Cores");
-        var cores = technologies.Where(t => t.gameObject.GetComponent<Multicore>() != null).ToList();
-        
-        ReEnumerateTechByYear(cores);
-        
-        Logger.LogInfo($"ReEnumerating Lithography Nodes");
-        var nodes = technologies.Where(t => t.gameObject.GetComponent<ProcessNode>() != null).ToList();
-        
-        ReEnumerateTechByYear(nodes);
-        
-        Logger.LogInfo($"ReEnumerating Memory");
-        var memory = technologies.Where(t => t.gameObject.GetComponent<Memory>() != null).ToList();
-        
-        ReEnumerateTechByYear(memory);
-        
-        Logger.LogInfo($"ReEnumerating Caches");
-        var caches = technologies.Where(t => t.gameObject.GetComponent<CacheSize>() != null).ToList();
-        
-        ReEnumerateTechByYear(caches);
-        
-    }
-
-    private void ReEnumerateWafers(List<Technology> technologies)
-    {
-        // wafers need to be enumerated in order of their size, otherwise the game doesn't upgrade them correctly
-        Logger.LogInfo($"Wafers enumerated: {technologies.Count}");
-        var waferIds = technologies.Select(t => t.ID).ToList();
-        var sortedWafers = technologies.OrderBy(t => t.gameObject.GetComponent<WaferSize>().Value).ToList();
-        var index = 0;
-        foreach (var wafer in sortedWafers)
-        {
-            Logger.LogInfo($"Wafer: {wafer.name}, Old ID: {wafer.ID}, New ID: {waferIds[index]}");
-            wafer.ID = waferIds[index];
-            index++;
-        }
-    }
-
-    private void ReEnumerateTechByYear(List<Technology> technologies)
-    {
-        Logger.LogInfo($"Techs enumerated: {technologies.Count}");
-        var ids = technologies.Select(t => t.ID).ToList();
-        var sortedTechs = technologies.OrderBy(t => t.Year).ToList();
-        var index = 0;
-        foreach (var tech in sortedTechs){
-            Logger.LogInfo($"Tech: {tech.name}, Old ID: {tech.ID}, New ID: {ids[index]}");
-            tech.ID = ids[index];
-            index++;
-        }
-    }
-
 
     private void UpdateHardwareMath(List<Technology> technologies)
     {

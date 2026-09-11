@@ -63,7 +63,7 @@ public class CompaniesInjector
         }
     }
 
-    public void LoadCustomCompanyFromSave(CompanySpawner companySpawner, string uniqueId, int saveId)
+    public bool LoadCustomCompanyFromSave(CompanySpawner companySpawner, string uniqueId, int saveId)
     {
         var customCompany = CustomCompanies.FirstOrDefault(t => t.CompanyId == uniqueId);
         if (customCompany != null)
@@ -75,8 +75,11 @@ public class CompaniesInjector
             SpawnAiCompany(companySpawner, customCompany, baseCompany, saveId);
             
             customCompany.hasSpawned = true;
+            Logger.LogInfo($"Loaded Custom Company from save {customCompany.CompanyName} ({customCompany.FullName})");
+            return true;
 
         }
+        return false;
     }
 
     public void InjectCompanies(CompanySpawner companySpawner)

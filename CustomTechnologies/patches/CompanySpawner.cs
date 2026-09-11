@@ -9,12 +9,21 @@ using ProcessorTycoon.CompanySystem;
 namespace CustomTechnologies.patches;
 
 [HarmonyPatch(typeof(CompanySpawner), "SpawnCompanies")]
-
 class CompanySpawner_SpawnCompanies
 {
     public static void Postfix(CompanySpawner __instance)
     {
         CompaniesInjector.Instance.InjectCompanies(__instance);
+    }
+}
+
+[HarmonyPatch(typeof(CompanySpawner), "SpawnCompanyFromSave")]
+class CompanySpawner_SpawnCompanyFromSave
+{
+    public static bool Prefix(CompanySpawner __instance, string uniqueID, int saveID)
+    {
+        var result = CompaniesInjector.Instance.LoadCustomCompanyFromSave(__instance, uniqueID, saveID);
+        return !result;
     }
 }
 
