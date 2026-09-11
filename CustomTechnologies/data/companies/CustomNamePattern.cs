@@ -27,7 +27,7 @@ public class CustomNamePattern: CpuNameTemplate.Pattern
         }
     }
 
-    public new string GenerateName(Cpu cpu, ICompanyOwner owner, Segment mainMarket, int currentYear)
+    public override string GenerateName(Cpu cpu, ICompanyOwner owner, Segment mainMarket, int currentYear)
     {
         currentCpu = cpu;
         this.owner = owner;
